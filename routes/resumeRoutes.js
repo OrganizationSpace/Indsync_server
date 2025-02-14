@@ -69,22 +69,32 @@ router.get("/list", async (req, res) => {
     }
 });
 
-// Update resume by ID
-router.post("/update/:id", async (req, res) => {
+// Update resume by resume ID
+router.post("/edit/:id", async (req, res) => {
     try {
-        const resumeId = req.params.id;
-        const updatedData = req.body;
+        console.log("Incoming request body:", req.body); // 🔍 Log the request body
 
-        // ✅ Call the controller function correctly
-        const updatedResume = await Resume.update(resumeId, updatedData);
+        const { templateId, userData = {} } = req.body;
 
-        if (!updatedResume) {
-            return res.status(404).json({ success: false, message: "Resume not found" });
+        if (!templateId || !req.params.id) {
+            return res.status(400).json({ success: false, message: "Missing templateId or resumeId" });
         }
 
-        res.status(200).json({ success: true, message: "✅ Resume updated successfully", data: updatedResume });
+        const updatedResume = await Resume.edit(req.params.id, templateId, userData);
+        res.status(200).json({ success: true, updatedResume });
+
     } catch (error) {
         res.status(500).json({ success: false, message: "Error updating resume", error: error.message });
+    }
+});
+
+//delete
+router.get("/delete", async (req, res) => {
+    try {
+        const resumes = await Resume.delete({});
+        res.status(200).json({ success: true, data: resumes });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error fetching resumes", error: error.message });
     }
 });
 

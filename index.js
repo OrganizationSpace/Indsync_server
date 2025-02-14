@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');  // ✅ Import CORS
+const morgan = require('morgan'); // ✅ Import Morgan
 const resumeRoutes = require('./routes/resumeRoutes');
 const templateRoutes = require('./routes/templateRoutes');
 const userRoutes = require("./routes/user");
@@ -11,10 +13,16 @@ const path = require('path');
 const app = express();
 const PORT = 5000;
 
+// ✅ Use CORS properly
+app.use(cors());
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(morgan('dev'));
+
 app.use(bodyParser.json());
 app.use('/resume', resumeRoutes);
 app.use('/templates', templateRoutes);
-
 app.use("/users", userRoutes);
 app.use("/job", jobRoutes);
 
@@ -36,18 +44,17 @@ if (!fs.existsSync(path.join(__dirname, 'pdfs'))) {
 }
 
 app.listen(PORT, () => {
-	console.log('SERVER STARTED 💐 ')
+    console.log('SERVER STARTED 💐 ');
 
-	mongoose
-		.connect(
-			'mongodb+srv://sona:sona2872@development.vhaae.mongodb.net/resumes',
-			{}
-		)
-		.then(() => {
-			conn = mongoose.connection
-			console.log('Connected to MongoDB')
-		})
-		.catch((error) => {
-		//	console.log('Error connecting to MongoDB:', error)
-		})
-})
+    mongoose
+        .connect(
+            'mongodb+srv://sona:sona2872@development.vhaae.mongodb.net/resumes',
+            {}
+        )
+        .then(() => {
+            console.log('Connected to MongoDB');
+        })
+        .catch((error) => {
+            console.log('Error connecting to MongoDB:', error);
+        });
+});

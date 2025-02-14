@@ -1,4 +1,5 @@
 const ResumeModel = require('../models/resumeModel');
+const Template_ = require('../models/templateModel');
 const generatePDF = require('../utils/pdfGenerator');
 
 class resumeController {
@@ -41,22 +42,64 @@ class resumeController {
             } catch (error) {
                 res.status(500).json({ error: "Error saving template" });
             }
-        }  
+    }  
 
     //update
-    async update(resumeId, updatedData) {
+    async edit(id, templateId, userData) {
         try {
+            console.log('------------------------')
+            console.log("Fetching template with ID:", templateId);
+    
+            // ✅ Fetch the selected template
+            const template = await Template_.findById(templateId);
+            console.log('Fetched template:', template);
+            
+            if (!template) {
+                throw new Error("Template not found");
+            }
+    
+            // ✅ Merge user data with template
+            let updatedTemplateContent = template.content;
+            for (const key in userData) {
+                const placeholder = `{{${key}}}`;
+                updatedTemplateContent = updatedTemplateContent.replace(new RegExp(placeholder, "g"), userData[key] || "");
+            }
+    
+            console.log("Updated Template Content:", updatedTemplateContent);
+    
+            // ✅ Fix: Send template name to `generatePDF`
+            const newPdfUrl = await generatePDF({
+                templatename: template.name, // ✅ Fix: Include template name
+                content: updatedTemplateContent
+            });
+    
+            // ✅ Update the resume in the database
             const result = await ResumeModel.findOneAndUpdate(
-                { _id: resumeId },  // ✅ Ensure it finds by _id
-                updatedData,
+                { _id: id },
+                { templateId, pdfUrl: newPdfUrl },
                 { new: true }
             );
+    
+            if (!result) {
+                throw new Error("Failed to update resume");
+            }
+    
             return result;
         } catch (error) {
-            console.error("Error updating resume:", error);
-            throw new Error("Error updating resume");
+            console.error("Error updating resume:", error.message);
+            throw new Error(error.message);
         }
-    }
+    }      
+    
+     //delete
+    async delete({}) {
+        try {
+            const result = await ResumeModel.updateOne({});
+            return result
+        } catch (error) {
+            res.status(500).json({ error: "Error saving template" });
+        }
+    }  
 }
 
 module.exports = new resumeController();
