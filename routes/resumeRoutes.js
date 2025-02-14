@@ -3,6 +3,7 @@ const Resume = require("../controllers/resumeController");
 const upload = require("../utils/uploadfile"); // AWS S3 Upload Middleware
 
 const router = express.Router();
+router.use(express.json())
 
 //generate
 router.post("/generate", upload, async (req, res) => {
@@ -18,8 +19,9 @@ router.post("/generate", upload, async (req, res) => {
             soft_skills, languages
         } = req.body;
 
-        const imageUrl = req.file ? req.file.location : "https://via.placeholder.com/150"; // ✅ Default Image
-
+        const {originalname} = req.file; 
+        const image = process.env.SPACE_DOMAIN + originalname;
+        console.log('image',image)
         // ✅ Ensure all required data is provided
         const resumeData = {
             name: name || "Unknown",
@@ -46,14 +48,24 @@ router.post("/generate", upload, async (req, res) => {
             institute2: institute2 || "Not specified",
             soft_skills: soft_skills ? soft_skills.split(",") : ["Communication", "Problem-Solving", "Teamwork", "Time Management"],
             languages: languages ? languages.split(",") : ["English"],
-            image: imageUrl,
+            image: image || "https://via.placeholder.com/150", // ✅ Default Image
             templatename: templatename || "default"
         };
 
         console.log("✅Processed Resume Data:", resumeData);
 
         // ✅ Fix: return the response directly
-        return await Resume.generateResume(req, res, resumeData);
+        const setResume = await Resume.generateResume({resumeData});
+        res.status(200).json({
+            success: true,
+            message: "Resume generated and saved successfully",
+            resume: {
+                resumeId: setResume._id,
+                pdfUrl: setResume.pdfUrl, // ✅ Public download link
+                userData: setResume // ✅ Return full user data
+            }
+        });
+
     } catch (error) {
         res.status(500).json({ success: false, message: "Error generating resume", error: error.message });
     }

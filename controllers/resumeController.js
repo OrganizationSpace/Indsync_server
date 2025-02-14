@@ -7,35 +7,51 @@ const generatePDF = require('../utils/pdfGenerator');
 
 class resumeController {
     //generate resume
-    async generateResume (req, res) {
+    async generateResume({resumeData}) {
         try {
-            const resumeData = req.body;
             console.log("Received Resume Data:", resumeData);
-
+    
             // ✅ Generate PDF & get the download link
             const pdfUrl = await generatePDF(resumeData);
-
-            // ✅ Save resume in MongoDB with PDF URL
-            const newResume = await ResumeModel.create({
+    
+            // ✅ Save full user data in MongoDB
+            const result = await ResumeModel.create({
                 name: resumeData.name,
                 email: resumeData.email,
                 phone: resumeData.phone,
-                pdfUrl: pdfUrl, // ✅ Save PDF link
+                address: resumeData.address,
+                objective: resumeData.objective,
+                college: resumeData.college,
+                course: resumeData.course,
+                secondary: resumeData.secondary,
+                year: resumeData.year,
+                technical_skills: resumeData.technical_skills,
+                company: resumeData.company,
+                role: resumeData.role,
+                duration: resumeData.duration,
+                project_description: resumeData.project_description,
+                project1: resumeData.project1,
+                description1: resumeData.description1,
+                project2: resumeData.project2,
+                description2: resumeData.description2,
+                certification1: resumeData.certification1,
+                institute1: resumeData.institute1,
+                certification2: resumeData.certification2,
+                institute2: resumeData.institute2,
+                soft_skills: resumeData.soft_skills, // ✅ Array
+                languages: resumeData.languages, // ✅ Array
+                image: resumeData.image, // ✅ Store image URL
+                templatename: resumeData.templatename,
+                pdfUrl: pdfUrl // ✅ Store PDF URL
             });
+            console.log("Saved Resume Data:", result);
 
-            return res.status(200).json({
-                success: true,
-                resume: {
-                    pdfUrl: pdfUrl, // ✅ Public download link
-                    resumeId: newResume._id,
-                }
-            });
-
+            return result
         } catch (error) {
             console.error("Error processing resume:", error);
             return res.status(500).json({ success: false, error: error.message });
         }
-    }
+    }    
 
     //list
     async list({}) {
