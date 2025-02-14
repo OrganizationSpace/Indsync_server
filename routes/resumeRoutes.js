@@ -69,20 +69,17 @@ router.get("/list", async (req, res) => {
     }
 });
 
-// Update resume by resume ID
-router.post("/edit/:id", async (req, res) => {
+// Update resume by ID
+router.post("/update/:id", async (req, res) => {
     try {
-        console.log("Incoming request body:", req.body); // 🔍 Log the request body
-
-        const { templateId, userData = {} } = req.body;
-
-        if (!templateId || !req.params.id) {
-            return res.status(400).json({ success: false, message: "Missing templateId or resumeId" });
+        const resumeId = req.params.id;
+        const updatedData = req.body;
+        // ✅ Call the controller function correctly
+        const updatedResume = await Resume.update(resumeId, updatedData);
+        if (!updatedResume) {
+            return res.status(404).json({ success: false, message: "Resume not found" });
         }
-
-        const updatedResume = await Resume.edit(req.params.id, templateId, userData);
-        res.status(200).json({ success: true, updatedResume });
-
+        res.status(200).json({ success: true, message: "✅ Resume updated successfully", data: updatedResume });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error updating resume", error: error.message });
     }
