@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const resumeRoutes = require('./routes/resumeRoutes');
 const templateRoutes = require('./routes/templateRoutes');
+const userRoutes = require("./routes/user");
+const jobRoutes = require("./routes/job");
 const fs = require('fs');
 const path = require('path');
 
@@ -12,6 +14,10 @@ const PORT = 5000;
 app.use(bodyParser.json());
 app.use('/resume', resumeRoutes);
 app.use('/templates', templateRoutes);
+
+app.use("/users", userRoutes);
+app.use("/job", jobRoutes);
+
 app.get('/pdfs/:filename', (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(__dirname, 'public', 'pdfs', filename);
