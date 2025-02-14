@@ -4,6 +4,8 @@ const Job = require("../models/job"); // Import Job Schema
 const router = express.Router();
 
 router.post("/job-search", async (req, res) => {
+    console.log("Received search data:", req.body);
+
     try {
         const {
             keyword,
@@ -17,9 +19,8 @@ router.post("/job-search", async (req, res) => {
             start,
             page,
         } = req.body;
-
-        console.log("Received search data:", req.body);
-
+        console.log("_____________________________________")
+        
         // Store job search query in MongoDB
         const newSearch = new Job({
             keyword,
@@ -35,7 +36,7 @@ router.post("/job-search", async (req, res) => {
         });
 
         await newSearch.save(); // Save to database
-
+        console.log("Search saved to database:", newSearch);
         // Generate LinkedIn Job Search URL
         const baseUrl = `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?`;
         const params = new URLSearchParams();
@@ -49,7 +50,6 @@ router.post("/job-search", async (req, res) => {
         if (jobType) params.append("f_JT", jobType);
 
         params.append("start", start + (page || 0));
-
         if (sortBy === "recent") params.append("sortBy", "DD");
         else if (sortBy === "relevant") params.append("sortBy", "R");
 

@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/register", async (req, res, next) => {
     try {
         const userData = await userController.register(req);
+        console.log("✅ Registration successful:", userData);
         res.status(200).json({
             success: true,
             message: userData.message,
