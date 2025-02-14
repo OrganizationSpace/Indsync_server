@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const ResumeModel = require('../models/resumeModel');
 const Template_ = require('../models/templateModel');
 const generatePDF = require('../utils/pdfGenerator');
@@ -92,14 +95,33 @@ class resumeController {
     }      
     
      //delete
-    async delete({}) {
-        try {
-            const result = await ResumeModel.updateOne({});
-            return result
+     async delete(name) { 
+        try {    
+            // Find the resume by name
+            const resume = await ResumeModel.findOne({ name });
+            if (!resume) {
+                return { success: false, message: "Resume not found" };
+            }
+    
+            // Extract and delete PDF file
+            const pdfPath = resume.pdfUrl.replace("http://localhost:5000", ""); // Adjust for actual server path
+            const fullPdfPath = path.join(__dirname, "..", pdfPath);
+    
+            if (fs.existsSync(fullPdfPath)) {
+                fs.unlinkSync(fullPdfPath);
+                console.log(`Deleted PDF: ${fullPdfPath}`);
+            }
+    
+            // Delete resume from database
+            await ResumeModel.deleteOne({ name });
+    
+            return { success: true, message: "Resume and PDF deleted successfully" };
         } catch (error) {
-            res.status(500).json({ error: "Error saving template" });
+            console.error("Error deleting resume:", error);
+            throw new Error("Failed to delete resume: " + error.message);
         }
-    }  
+    }
+    
 }
 
 module.exports = new resumeController();

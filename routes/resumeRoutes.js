@@ -89,12 +89,13 @@ router.post("/edit/:id", async (req, res) => {
 });
 
 //delete
-router.get("/delete", async (req, res) => {
+router.post("/delete", async (req, res) => {
     try {
-        const resumes = await Resume.delete({});
-        res.status(200).json({ success: true, data: resumes });
+        const { name } = req.body; // Get name from request body
+        const result = await Resume.delete(name); // Call controller method
+        res.status(200).json({ success: true, message: result.message });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Error fetching resumes", error: error.message });
+        res.status(500).json({ success: false, message: "Error deleting resume", error: error.message });
     }
 });
 
