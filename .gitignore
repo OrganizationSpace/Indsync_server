@@ -1,0 +1,16 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore environment files
+.env
+
+# Ignore compiled packages
+package-lock.json
+package.json
+
+# Ignore public folder
+public/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
