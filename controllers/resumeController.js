@@ -109,3 +109,15 @@ class resumeController {
 }
 
 module.exports = new resumeController();
+
+
+
+
+
+
+
+
+
+
+
+
