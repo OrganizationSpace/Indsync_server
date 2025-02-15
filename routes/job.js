@@ -50,7 +50,7 @@ router.post("/job-search", async (req, res) => {
         else if (sortBy === "relevant") params.append("sortBy", "R");
 
         const finalUrl = baseUrl + params.toString();
-
+        console.log('----',finalUrl)
         res.status(200).json({ success: true, url: finalUrl, savedSearch: newSearch });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
