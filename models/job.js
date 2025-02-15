@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+// Define a nested schema for salaryRange
+const SalaryRangeSchema = new mongoose.Schema({
+    start: { type: Number, required: true, min: 0 },
+    end: { 
+        type: Number, 
+        required: true, 
+        validate: {
+            validator: function(value) {
+                return value > this.start; // Ensure end > start
+            },
+            message: "End salary must be greater than start salary"
+        }
+    }
+}, { _id: false }); // Prevent MongoDB from creating an _id for the subdocument
+
 const JobSchema = new mongoose.Schema({
     keyword: { type: String, required: true }, // Job title or search keyword
     location: { type: String, required: true }, // Job location
@@ -11,23 +26,13 @@ const JobSchema = new mongoose.Schema({
     },
 
     salaryRange: { 
-        start: { type: Number, required: true, min: 0 },
-        end: { 
-            type: Number, 
-            required: true, 
-            validate: {
-                validator: function(value) {
-                    return value > this.salaryRange.start; // Ensure end > start
-                },
-                message: "End salary must be greater than start salary"
-            }
-        }
+        type: SalaryRangeSchema, // Use the nested schema here
+        required: true
     },
 
     experienceLevel: { 
         type: String, 
-        enum: ["One year", "Two year", "Three year","More than three years"], 
-        //default: "One year" 
+        enum: ["One year", "Two year", "Three year", "More than three years"], 
     }, 
 
     remoteFilter: { type: Boolean, default: false }, // true = remote, false = office
@@ -38,20 +43,8 @@ const JobSchema = new mongoose.Schema({
     },
 
     sortBy: { type: Date, default: Date.now }, // Sort by selected date
-
     createdAt: { type: Date, default: Date.now } // Timestamp of the search
 });
-
-// Function to get predefined date filters
-JobSchema.statics.getDateFilter = function (filterType) {
-    const today = new Date();
-    if (filterType === "past_week") {
-        return new Date(today.setDate(today.getDate() - 7)); // 7 days ago
-    } else if (filterType === "past_month") {
-        return new Date(today.setMonth(today.getMonth() - 1)); // 1 month ago
-    } 
-    return today; // Default to current date
-};
 
 // Export Job Model
 module.exports = mongoose.model("Job", JobSchema);
