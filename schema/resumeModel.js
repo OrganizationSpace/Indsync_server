@@ -31,3 +31,4 @@ const ResumeSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Resume", ResumeSchema);
+

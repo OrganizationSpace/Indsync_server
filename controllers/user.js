@@ -1,5 +1,6 @@
 const User = require("../schema/user");
 
+
 class UserController {
     // 🟢 User Registration
     async register(req) {
