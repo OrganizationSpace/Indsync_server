@@ -58,7 +58,7 @@ const JobSchema = new mongoose.Schema({
         required: true
     },
 
-    remoteFilter: { type: Boolean, default: false }, 
+    remoteFilter: { type: Boolean }, 
     jobType: {
         type: String,
         enum: ["Full-time", "Part-time", "Internship"],
