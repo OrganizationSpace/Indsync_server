@@ -1,12 +1,12 @@
 const express = require("express");
 const Resume = require("../controllers/resumeController");
-const upload = require("../utils/uploadfile"); // AWS S3 Upload Middleware
-
+//const upload = require("../utils/uploadfile"); // AWS S3 Upload Middleware
+const {uploadMultiple,uploadSingle} = require("../utils/uploadfile"); // AWS S3 Upload Middleware
 const router = express.Router();
 router.use(express.json())
 
 //generate
-router.post("/generate", upload, async (req, res) => {
+router.post("/generate", uploadSingle, async (req, res) => {
     try {
         console.log("Received Data:", req.body);
 
@@ -66,6 +66,53 @@ router.post("/generate", upload, async (req, res) => {
             }
         });
 
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error generating resume", error: error.message });
+    }
+});
+
+router.post("/add",uploadMultiple,async(req,res)=>{
+    try {
+        console.log("Received Data:", req.body);
+        res.status(200).json({
+            success: true,
+            message: "Resume generated and saved successfully",
+            // resume: {
+            //     resumeId: setResume._id,
+            //     pdfUrl: setResume.pdfUrl,
+            //     userData: setResume,
+            // },
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error generating resume", error: error.message });
+    }
+})
+
+router.post("/add", uploadMultiple, async (req, res) => {
+    try {
+        console.log("Received Data:", req.body);
+
+        const data = req.body;
+        let profilePicture = null;
+        let signature = null;
+
+        if (req.files && req.files.length > 0) {
+            profilePicture = process.env.SPACE_DOMAIN + req.files[0].originalname;
+            signature = req.files.length > 1 ? process.env.SPACE_DOMAIN + req.files[1].originalname : null;
+        }
+
+        // ✅ Ensure only provided fields are saved
+        const setResume = await Resume.add({ data, profilePicture, signature });
+
+        res.status(200).json({
+            success: true,
+            message: "Resume generated and saved successfully",
+            // resume: {
+            //     resumeId: setResume._id,
+            //     pdfUrl: setResume.pdfUrl,
+            //     userData: setResume,
+            // },
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error generating resume", error: error.message });
     }

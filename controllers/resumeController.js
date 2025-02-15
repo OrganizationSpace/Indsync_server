@@ -53,6 +53,58 @@ class resumeController {
         }
     }    
 
+    async  add({ data, profilePicture, signature }) {
+        try {
+            console.log("Received Resume Data:", data);
+    
+            let resumeData = {};
+    
+            // ✅ Store only user-provided fields
+            Object.keys(data).forEach((key) => {
+                if (data[key] !== undefined && data[key] !== null && data[key] !== "") {
+                    try {
+                        let parsedData = JSON.parse(data[key]);
+    
+                        // ✅ Save only if the value is not empty
+                        if (
+                            (Array.isArray(parsedData) && parsedData.length > 0) ||  // Skip empty arrays
+                            (typeof parsedData === "object" && Object.keys(parsedData).length > 0) ||  // Skip empty objects
+                            (typeof parsedData !== "object")  // Keep primitive values
+                        ) {
+                            resumeData[key] = parsedData;
+                        }
+                    } catch (e) {
+                        // If it's not JSON, keep the value as it is
+                        resumeData[key] = data[key];
+                    }
+                }
+            });
+    
+            // ✅ Add profilePicture & signature if provided
+            if (profilePicture) resumeData.profilePicture = profilePicture;
+            if (signature) resumeData.signature = signature;
+    
+            // ✅ Remove empty arrays and objects from resumeData
+            Object.keys(resumeData).forEach((key) => {
+                if (
+                    (Array.isArray(resumeData[key]) && resumeData[key].length === 0) ||
+                    (typeof resumeData[key] === "object" && Object.keys(resumeData[key]).length === 0)
+                ) {
+                    delete resumeData[key];
+                }
+            });
+    
+            // ✅ Save only provided fields in MongoDB
+            const result = await Template_.create(resumeData);
+            console.log("Saved Resume Data:", result);
+    
+            return result;
+        } catch (error) {
+            console.error("Error processing resume:", error);
+            throw new Error(error.message);
+        }
+    }
+    
     //list
     async list({}) {
             try {
