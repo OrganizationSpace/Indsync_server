@@ -1,4 +1,4 @@
-const Template_ = require("../models/templateModel");
+const Template_ = require("../schema/templateModel");
 
 
 class templateController {

@@ -1,6 +1,6 @@
 const express = require("express");
 const Resume = require("../controllers/resumeController");
-const upload = require("../utils/uploadfile"); // AWS S3 Upload Middleware
+const upload = require("../function/uploadfile"); // AWS S3 Upload Middleware
 
 const router = express.Router();
 router.use(express.json())

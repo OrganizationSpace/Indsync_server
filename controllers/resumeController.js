@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const ResumeModel = require('../models/resumeModel');
-const Template_ = require('../models/templateModel');
-const generatePDF = require('../utils/pdfGenerator');
+const ResumeModel = require('../schema/resumeModel');
+const Template_ = require('../schema/templateModel');
+const generatePDF = require('../function/pdfGenerator');
 
 class resumeController {
     //generate resume

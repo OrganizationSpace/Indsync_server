@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../schema/user");
 
 class UserController {
     // 🟢 User Registration

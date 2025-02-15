@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const TemplateModel = require('../models/templateModel'); // ✅ Import Template Model
+const TemplateModel = require('../schema/templateModel'); // ✅ Import Template Model
 
 const generatePDF = async (resumeData) => {
     console.log("Generating PDF for:", resumeData.name);
