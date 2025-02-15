@@ -1,23 +1,8 @@
 const mongoose = require("mongoose");
 
-// Define a nested schema for salaryRange
-const SalaryRangeSchema = new mongoose.Schema({
-    start: { type: Number, required: true, min: 0 },
-    end: { 
-        type: Number, 
-        required: true, 
-        validate: {
-            validator: function(value) {
-                return value > this.start; // Ensure end > start
-            },
-            message: "End salary must be greater than start salary"
-        }
-    }
-}, { _id: false }); // Prevent MongoDB from creating an _id for the subdocument
-
 const JobSchema = new mongoose.Schema({
-    keyword: { type: String, required: true }, // Job title or search keyword
-    location: { type: String, required: true }, // Job location
+    keyword: { type: String, required: true }, 
+    location: { type: String, required: true }, 
 
     dateSincePosted: {
         type: String,
@@ -25,9 +10,27 @@ const JobSchema = new mongoose.Schema({
         default: "current_date"
     },
 
-    salaryRange: { 
-        type: SalaryRangeSchema, // Use the nested schema here
-        required: true
+    salaryRanges: {  // ✅ Changed from salaryRange to salaryRanges
+        type: [{ 
+            start: { type: Number, required: true, min: 1000 }, 
+            end: { 
+                type: Number, 
+                required: true, 
+                validate: {
+                    validator: function(value) {
+                        return value > this.start; 
+                    },
+                    message: "End salary must be greater than start salary"
+                }
+            }
+        }],
+        required: true,
+        validate: {
+            validator: function(arr) {
+                return arr.length > 0; 
+            },
+            message: "At least one salary range is required"
+        }
     },
 
     experienceLevel: { 
@@ -35,16 +38,15 @@ const JobSchema = new mongoose.Schema({
         enum: ["One year", "Two year", "Three year", "More than three years"], 
     }, 
 
-    remoteFilter: { type: Boolean, default: false }, // true = remote, false = office
+    remoteFilter: { type: Boolean, default: false }, 
     jobType: { 
         type: String, 
         enum: ["Full-time", "Part-time", "Internship"], 
         default: "Full-time" 
     },
 
-    sortBy: { type: Date, default: Date.now }, // Sort by selected date
-    createdAt: { type: Date, default: Date.now } // Timestamp of the search
+    sortBy: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now }
 });
 
-// Export Job Model
 module.exports = mongoose.model("Job", JobSchema);
