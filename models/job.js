@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const JobSchema = new mongoose.Schema({
-    keyword: { type: String, required: true }, 
-    location: { type: String, required: true }, 
+    keyword: { type: String, required: true },  
+    location: { type: String, required: true },  
 
     dateSincePosted: {
         type: String,
@@ -10,39 +10,22 @@ const JobSchema = new mongoose.Schema({
         default: "current_date"
     },
 
-    salaryRanges: {  // ✅ Changed from salaryRange to salaryRanges
-        type: [{ 
-            start: { type: Number, required: true, min: 1000 }, 
-            end: { 
-                type: Number, 
-                required: true, 
-                validate: {
-                    validator: function(value) {
-                        return value > this.start; 
-                    },
-                    message: "End salary must be greater than start salary"
-                }
-            }
-        }],
-        required: true,
-        validate: {
-            validator: function(arr) {
-                return arr.length > 0; 
-            },
-            message: "At least one salary range is required"
-        }
+    salaryRanges: {
+        type: [{ type: String, enum: ["0-50k", "50k-100k", "100k-150k", "150k-200k", "200k+"] }],
+        required: true
     },
 
-    experienceLevel: { 
-        type: String, 
-        enum: ["One year", "Two year", "Three year", "More than three years"], 
-    }, 
+    experienceLevel: {
+        type: String,
+        enum: ["One year", "Two years", "Three years", "More than three years"],
+        required: true
+    },
 
     remoteFilter: { type: Boolean, default: false }, 
-    jobType: { 
-        type: String, 
-        enum: ["Full-time", "Part-time", "Internship"], 
-        default: "Full-time" 
+    jobType: {
+        type: String,
+        enum: ["Full-time", "Part-time", "Internship"],
+        default: "Full-time"
     },
 
     sortBy: { type: Date, default: Date.now },

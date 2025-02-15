@@ -11,20 +11,21 @@ router.post("/job-search", async (req, res) => {
             keyword,
             location,
             dateSincePosted,
-            salary,
+            salaryRanges,  
             experienceLevel,
             remoteFilter,
             jobType,
             sortBy
         } = req.body;
-        console.log("_____________________________________")
-        
+
+        console.log("_____________________________________");
+
         // Store job search query in MongoDB
         const newSearch = new Job({
             keyword,
             location,
             dateSincePosted,
-            salary,
+            salaryRanges,  
             experienceLevel,
             remoteFilter,
             jobType,
@@ -33,6 +34,7 @@ router.post("/job-search", async (req, res) => {
 
         await newSearch.save(); // Save to database
         console.log("Search saved to database:", newSearch);
+
         // Generate LinkedIn Job Search URL
         const baseUrl = `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?`;
         const params = new URLSearchParams();
@@ -40,12 +42,10 @@ router.post("/job-search", async (req, res) => {
         if (keyword) params.append("keywords", keyword);
         if (location) params.append("location", location);
         if (dateSincePosted) params.append("f_TPR", dateSincePosted);
-        if (salary) params.append("f_SB2", salary);
+        if (salaryRanges && salaryRanges.length > 0) params.append("f_SB2", salaryRanges.join(",")); // Convert array to string
         if (experienceLevel) params.append("f_E", experienceLevel);
-        if (remoteFilter) params.append("f_WT", remoteFilter);
+        if (remoteFilter !== undefined) params.append("f_WT", remoteFilter);
         if (jobType) params.append("f_JT", jobType);
-
-        params.append("start", start + (page || 0));
         if (sortBy === "recent") params.append("sortBy", "DD");
         else if (sortBy === "relevant") params.append("sortBy", "R");
 
