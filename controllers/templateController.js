@@ -20,6 +20,27 @@ class templateController {
             res.status(500).json({ error: "Error saving template" });
           }
     }  
+
+     // Update Template
+    async update(templateId, updatedData) {
+      try {
+          const updatedTemplate = await Template_.findOneAndUpdate(templateId, updatedData, { new: true });
+          if (!updatedTemplate) throw new Error("Template not found");
+          return updatedTemplate;
+      } catch (error) {
+          throw new Error("Error updating template");
+      }
+  }
+
+  async delete(templateId) {
+    try {
+        const deletedTemplate = await Template_.deleteOne(templateId);
+        if (!deletedTemplate) throw new Error("Template not found");
+        return true;
+    } catch (error) {
+        throw new Error("Error deleting template");
+    }
+}
 }
 
 module.exports = new templateController();
