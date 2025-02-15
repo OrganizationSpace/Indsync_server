@@ -11,7 +11,7 @@ const JobSchema = new mongoose.Schema({
     },
 
     salaryRanges: {
-        type: { type: String, enum: ["0-50k", "50k-100k", "100k-150k", "150k-200k", "200k+"] },
+        type: String, enum: ["0-50k", "50k-100k", "100k-150k", "150k-200k", "200k+"] ,
         required: true
     },
 
@@ -28,7 +28,7 @@ const JobSchema = new mongoose.Schema({
         default: "Full-time"
     },
 
-    //sortBy: { type: Date, default: Date.now },
+    sortBy: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now }
 });
 
