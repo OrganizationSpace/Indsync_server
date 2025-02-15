@@ -88,35 +88,35 @@ router.post("/add",uploadMultiple,async(req,res)=>{
     }
 })
 
-router.post("/add", uploadMultiple, async (req, res) => {
-    try {
-        console.log("Received Data:", req.body);
+// router.post("/add", uploadMultiple, async (req, res) => {
+//     try {
+//         console.log("Received Data:", req.body);
 
-        const data = req.body;
-        let profilePicture = null;
-        let signature = null;
+//         const data = req.body;
+//         let profilePicture = null;
+//         let signature = null;
 
-        if (req.files && req.files.length > 0) {
-            profilePicture = process.env.SPACE_DOMAIN + req.files[0].originalname;
-            signature = req.files.length > 1 ? process.env.SPACE_DOMAIN + req.files[1].originalname : null;
-        }
+//         if (req.files && req.files.length > 0) {
+//             profilePicture = process.env.SPACE_DOMAIN + req.files[0].originalname;
+//             signature = req.files.length > 1 ? process.env.SPACE_DOMAIN + req.files[1].originalname : null;
+//         }
 
-        // ✅ Ensure only provided fields are saved
-        const setResume = await Resume.add({ data, profilePicture, signature });
+//         // ✅ Ensure only provided fields are saved
+//         const setResume = await Resume.add({ data, profilePicture, signature });
 
-        res.status(200).json({
-            success: true,
-            message: "Resume generated and saved successfully",
-            // resume: {
-            //     resumeId: setResume._id,
-            //     pdfUrl: setResume.pdfUrl,
-            //     userData: setResume,
-            // },
-        });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error generating resume", error: error.message });
-    }
-});
+//         res.status(200).json({
+//             success: true,
+//             message: "Resume generated and saved successfully",
+//             // resume: {
+//             //     resumeId: setResume._id,
+//             //     pdfUrl: setResume.pdfUrl,
+//             //     userData: setResume,
+//             // },
+//         });
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: "Error generating resume", error: error.message });
+//     }
+// });
 
 //list
 router.get("/list", async (req, res) => {
