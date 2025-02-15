@@ -28,7 +28,7 @@ const JobSchema = new mongoose.Schema({
         default: "Full-time"
     },
 
-    sortBy: { type: Date, default: Date.now },
+    //sortBy: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now }
 });
 

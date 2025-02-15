@@ -29,7 +29,7 @@ router.post("/job-search", async (req, res) => {
             experienceLevel,
             remoteFilter,
             jobType,
-            sortBy
+            //sortBy
         });
 
         await newSearch.save(); // Save to database
