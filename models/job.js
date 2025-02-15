@@ -11,7 +11,7 @@ const JobSchema = new mongoose.Schema({
     },
 
     salaryRanges: {
-        type: [{ type: String, enum: ["0-50k", "50k-100k", "100k-150k", "150k-200k", "200k+"] }],
+        type: { type: String, enum: ["0-50k", "50k-100k", "100k-150k", "150k-200k", "200k+"] },
         required: true
     },
 
