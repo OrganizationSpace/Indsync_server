@@ -165,16 +165,31 @@ router.post("/search", async (req, res) => {
         const $ = cheerio.load(response.data);
         const jobs = [];
 
-        $('li').each((index, element) => {
+        // Extract job details from the initial listing
+        for (const element of $('li').toArray()) {
             const title = $(element).find('.base-search-card__title').text().trim();
             const company = $(element).find('.base-search-card__subtitle').text().trim();
             const location = $(element).find('.job-search-card__location').text().trim();
             const date = $(element).find('.job-search-card__listdate').text().trim();
             const link = $(element).find('a.base-card__full-link').attr('href');
             const companyImage = $(element).find('.artdeco-entity-image').attr('data-delayed-url'); // Extract company image URL
-            //const description = $(element).find('.base-search-card__info .base-search-card__metadata + div').text().trim(); // Extract job description
 
             if (title && company && location && date && link) {
+                // Fetch job description from the individual job page
+                let jobDescription = "No description available";
+                try {
+                    const jobPageResponse = await axios.get(link, {
+                        headers: {
+                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                            "Accept-Language": "en-US,en;q=0.9"
+                        }
+                    });
+                    const jobPage$ = cheerio.load(jobPageResponse.data);
+                    jobDescription = jobPage$('.description__text').text().trim() || "No description available";
+                } catch (error) {
+                    console.error("Error fetching job description:", error.message);
+                }
+
                 jobs.push({
                     title,
                     company,
@@ -182,10 +197,10 @@ router.post("/search", async (req, res) => {
                     date,
                     link,
                     companyImage: companyImage || null, // Add company image URL (fallback to null if not found)
-                    //description: description || "No description available" // Add job description (fallback to a default message if not found)
+                    jobDescription // Add job description
                 });
             }
-        });
+        }
 
         // Return JSON response with jobs and saved search data
         res.status(200).json({

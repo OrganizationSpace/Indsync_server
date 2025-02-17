@@ -55,7 +55,7 @@ router.post('/fetch', async (req, res) => {
 
         // Fetch templates based on the name (or all templates if no name is provided)
         const fetchtemplates = await Template.fetch(email);
-
+        console.log('✅ fetchedtemplate',fetchtemplates)
         // Respond with the list of templates
         res.status(200).json({ success: true, fetchtemplates });
     } catch (error) {
