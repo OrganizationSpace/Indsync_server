@@ -33,14 +33,33 @@ class templateController {
     }
   }
 
-    async list({}) {
+  async list({}) {
         try {
             const result = await Template_.find();
             return result
           } catch (error) {
             res.status(500).json({ error: "Error saving template" });
           }
-    }  
+  }  
+
+    async fetch(name) {
+      try {
+          let result;
+          
+          if (name) {
+              // Fetch templates by name if 'name' is provided
+              result = await Template_.find({ name: name });
+          } else {
+              // If no 'name' is provided, fetch all templates
+              result = await Template_.find();
+          }
+  
+          return result;  // Return the result to be sent as the response
+      } catch (error) {
+          throw new Error('Error fetching templates: ' + error.message);  // Throw error if something goes wrong
+      }
+  }
+  
 }
 
 module.exports = new templateController();

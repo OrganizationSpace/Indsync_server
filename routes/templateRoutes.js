@@ -3,6 +3,7 @@ const Template = require('../controllers/templateController');
 
 const router = express.Router();
 
+//add
 router.post("/add",async (req, res, next) => {
       try {
         const filteredData = {};
@@ -27,15 +28,16 @@ router.post("/add",async (req, res, next) => {
         res.status(200).json({
           success: true,
           message: "Template data added successfully",
-          data: { _id: templateAdd._id },
+          data: { template : templateAdd },
         });
       } catch (error) {
         console.error("Error in /add route:", error);
         next(error);
       }
     }
-  );  
+);  
 
+//list
 router.get('/list', async (req, res) => {
     try {
         const listtemplates = await TemplateController.list({});
@@ -44,6 +46,24 @@ router.get('/list', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error fetching templates', error: error.message });
     }
 });
+
+//fetch
+router.post('/fetch', async (req, res) => {
+    try {
+        const { name } = req.body;  // Access name from request body
+        console.log('Name to list:', name);
+
+        // Fetch templates based on the name (or all templates if no name is provided)
+        const listtemplates = await Template.fetch(name);
+
+        // Respond with the list of templates
+        res.status(200).json({ success: true, listtemplates });
+    } catch (error) {
+        // Handle error if something goes wrong
+        res.status(500).json({ success: false, message: 'Error fetching templates', error: error.message });
+    }
+});
+
 
 module.exports = router;
 
