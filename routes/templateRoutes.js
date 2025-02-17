@@ -22,12 +22,12 @@ router.post("/add",async (req, res, next) => {
         // Add new template entry using controller method
         const templateAdd = await Template.add(filteredData);
   
-        console.log("Template added successfully:", templateAdd);
+        console.log("✅Template added successfully:", templateAdd);
   
         // Respond with success message and template ID
         res.status(200).json({
           success: true,
-          message: "Template data added successfully",
+          message: "✅Template data added successfully",
           data: { template : templateAdd },
         });
       } catch (error) {
@@ -40,7 +40,7 @@ router.post("/add",async (req, res, next) => {
 //list
 router.get('/list', async (req, res) => {
     try {
-        const listtemplates = await TemplateController.list({});
+        const listtemplates = await Template.list({});
         res.status(200).json({ success: true, listtemplates });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Error fetching templates', error: error.message });
@@ -50,14 +50,14 @@ router.get('/list', async (req, res) => {
 //fetch
 router.post('/fetch', async (req, res) => {
     try {
-        const { name } = req.body;  // Access name from request body
-        console.log('Name to list:', name);
+        const { email } = req.body;  // Access name from request body
+        console.log('Email to list:', email);
 
         // Fetch templates based on the name (or all templates if no name is provided)
-        const listtemplates = await Template.fetch(name);
+        const fetchtemplates = await Template.fetch(email);
 
         // Respond with the list of templates
-        res.status(200).json({ success: true, listtemplates });
+        res.status(200).json({ success: true, fetchtemplates });
     } catch (error) {
         // Handle error if something goes wrong
         res.status(500).json({ success: false, message: 'Error fetching templates', error: error.message });

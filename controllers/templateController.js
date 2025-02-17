@@ -42,13 +42,13 @@ class templateController {
           }
   }  
 
-    async fetch(name) {
+  async fetch(email) {
       try {
           let result;
           
-          if (name) {
+          if (email) {
               // Fetch templates by name if 'name' is provided
-              result = await Template_.find({ name: name });
+              result = await Template_.find({ email: email });
           } else {
               // If no 'name' is provided, fetch all templates
               result = await Template_.find();
