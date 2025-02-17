@@ -1,34 +1,40 @@
 const express = require("express");
-const TemplateController = require('../controllers/templateController');
+const Template = require('../controllers/templateController');
 
 const router = express.Router();
 
-router.post(
-	"/add",
-	async (req, res, next) => {
-		try {
-			const filteredData = {};
-
-			// Filtering only user-provided fields
-			Object.keys(req.body).forEach((key) => {
-				if (req.body[key]) filteredData[key] = req.body[key];
-			});
-
-			// Add new template entry
-			const templateAdd = await template.add(filteredData);
-
-			// Respond with success message
-			res.status(200).json({
-				success: true,
-				message: "Template data added successfully",
-				data: { _id: templateAdd._id },
-			});
-		} catch (error) {
-			console.error(error);
-			next(error);
-		}
-	}
-);
+router.post("/add",async (req, res, next) => {
+      try {
+        const filteredData = {};
+  
+        console.log("Received request body:", req.body);
+  
+        // Filtering only user-provided fields from the request body
+        Object.keys(req.body).forEach((key) => {
+          if (req.body[key]) {
+            filteredData[key] = req.body[key];
+          }
+        });
+  
+        console.log("Filtered data for template:", filteredData);
+  
+        // Add new template entry using controller method
+        const templateAdd = await Template.add(filteredData);
+  
+        console.log("Template added successfully:", templateAdd);
+  
+        // Respond with success message and template ID
+        res.status(200).json({
+          success: true,
+          message: "Template data added successfully",
+          data: { _id: templateAdd._id },
+        });
+      } catch (error) {
+        console.error("Error in /add route:", error);
+        next(error);
+      }
+    }
+  );  
 
 router.get('/list', async (req, res) => {
     try {
