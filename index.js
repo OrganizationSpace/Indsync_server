@@ -22,7 +22,7 @@ app.use(morgan('dev'));
 
 app.use(bodyParser.json());
 app.use('/resume', resumeRoutes);
-app.use('/templates', templateRoutes);
+app.use('/template', templateRoutes);
 app.use("/users", userRoutes);
 app.use("/job", jobRoutes);
 
