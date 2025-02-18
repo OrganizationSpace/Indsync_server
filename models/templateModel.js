@@ -79,7 +79,7 @@ const templateSchema = new mongoose.Schema({
   ],
 
   // Awards & Achievements (Optional)
-  awards: [
+  Achievements: [
     {
       title: { type: String },
       description: { type: String },
@@ -90,7 +90,6 @@ const templateSchema = new mongoose.Schema({
   activities: [
     {
       name: { type: String },
-      description: { type: String },
     }
   ],
 
@@ -111,6 +110,6 @@ const templateSchema = new mongoose.Schema({
   // Signature (as Image URL, Required for All)
   signature: { type: String }, // Signature image URL
 
-}, { timestamps: true });
+});
 
 module.exports = mongoose.model("Template_", templateSchema);
