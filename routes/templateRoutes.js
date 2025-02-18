@@ -22,12 +22,12 @@ router.post("/add",async (req, res, next) => {
         // Add new template entry using controller method
         const templateAdd = await Template.add(filteredData);
   
-        console.log("✅Template added successfully:", templateAdd);
+        console.log("✅ Template added successfully:", templateAdd);
   
         // Respond with success message and template ID
         res.status(200).json({
           success: true,
-          message: "✅Template data added successfully",
+          message: "✅ Template data added successfully",
           data: { template : templateAdd },
         });
       } catch (error) {
