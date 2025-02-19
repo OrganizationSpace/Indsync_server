@@ -3,9 +3,9 @@ const Template_ = require("../models/templateModel");
 
 class templateController {
     
-  async  add(data) {
+  async add(data) {
     try {
-      console.log("Data received in controller:", data);
+      console.log("------------------Data received in controller-------------------------");
   
       // Remove empty or undefined fields
       const filteredData = Object.fromEntries(
@@ -16,16 +16,14 @@ class templateController {
           return value !== "" && value !== null && value !== undefined; // Keep non-empty strings
         })
       );
-  
-      console.log("Filtered data after cleaning:", filteredData);
-  
+    
       // Create a new template with the filtered data
       const newTemplate = new Template_(filteredData);
   
       // Save the template to the database
       const result = await newTemplate.save();
   
-      console.log("Saved template:", result);
+      console.log("---------------------------Saved template------------------------------");
       return result; // Return the saved template
     } catch (error) {
       console.error("Error adding template data in controller:", error);
@@ -60,6 +58,98 @@ class templateController {
       }
   }
   
+  async addProfile(email,image){
+    console.log("------------------Data received in controller-------------------------");
+    try{
+      const result = await Template_.updateOne(
+        {
+        email: email
+        },{
+        profilePicture: image
+        })
+        console.log("------------------Image added-------------------------");
+
+      return result
+    }catch(error){
+      console.error("Error in /add route:", error);
+      next(error);
+    }
+  }
+
+  async addSignature(email,image){
+    console.log("------------------Data received in controller-------------------------");
+    try{
+      const result = await Template_.updateOne(
+        {
+        email: email
+        },{
+          signature: image
+        })
+      console.log("------------------Image added-------------------------");
+
+      return result
+    }catch(error){
+      console.error("Error in /add route:", error);
+      next(error);
+    }
+  }
+
+  async delete( _id ) {
+		try {
+			const result = await Template_.deleteMany({
+				_id:_id,
+			})
+			return result
+		} catch (error) {
+			console.error(error)
+			throw error
+		}
+	}
+
+  async profileDelete( _id ) {
+		try {
+			const result = await Template_.updateOne({
+				_id:_id
+			},{ $unset: { profilePicture : 1 } }
+    )
+			return result
+		} catch (error) {
+			console.error(error)
+			throw error
+		}
+	}
+
+  async signatureDelete( _id ) {
+		try {
+			const result = await Template_.updateOne({
+				_id:_id
+			},{ $unset: { signature : 1 } }
+    )
+			return result
+		} catch (error) {
+			console.error(error)
+			throw error
+		}
+	}
+
+  async update(_id, dataToUpdate) {
+    try {
+      const result = await Template_.updateOne(
+        { _id: _id },
+        { $set: dataToUpdate } // Use $set to update fields
+      );
+  
+      if (result.modifiedCount === 0) {
+        return null; // No document was updated (e.g., incorrect ID)
+      }
+  
+      return result;
+    } catch (error) {
+      console.error("Error in update function:", error);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = new templateController();

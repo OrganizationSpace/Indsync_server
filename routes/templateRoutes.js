@@ -1,6 +1,6 @@
 const express = require("express");
 const Template = require('../controllers/templateController');
-
+const upload = require('../utils/uploadfile')
 const router = express.Router();
 
 //add
@@ -43,7 +43,7 @@ router.get('/list', async (req, res) => {
         const listtemplates = await Template.list({});
         res.status(200).json({ success: true, listtemplates });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Error fetching templates', error: error.message });
+        res.status(500).json({ success: false, message: 'Error listing templates', error: error.message });
     }
 });
 
@@ -64,6 +64,122 @@ router.post('/fetch', async (req, res) => {
     }
 });
 
+//profile add
+router.post("/profile/add",upload,async(req,res,next)=>{
+  try{
+    const {email} = req.body;
+    const {originalname} = req.file; 
+    const image = process.env.SPACE_DOMAIN + originalname;
+    console.log('image',image)
+
+    const profileUpload = await Template.addProfile(email,image)
+    console.log('uploaded',profileUpload)
+
+    res.status(200).json({
+      success: true,
+      message: "✅ Image added successfully",
+      data: profileUpload,
+    });
+  } catch(error){
+        console.error("Error in /profile/add route:", error);
+        next(error);
+  }
+})
+
+//signature add
+router.post("/signature/add",upload,async(req,res,next)=>{
+  try{
+    const {email} = req.body;
+    const {originalname} = req.file; 
+    const image = process.env.SPACE_DOMAIN + originalname;
+    console.log('image',image)
+
+    const signatureUpload = await Template.addSignature(email,image)
+    console.log('uploaded',signatureUpload)
+
+    res.status(200).json({
+      success: true,
+      message: "✅ Image added successfully",
+      data: signatureUpload,
+    });
+  } catch(error){
+        console.error("Error in /signature/add route:", error);
+        next(error);
+  }
+})
+
+//delete
+router.post("/delete",async(req,res,next)=>{
+try{
+  const _id = req.body
+  const templateDelete = await Template.delete(_id)
+  console.log('template deleted', templateDelete)
+  res.status(200).json({
+    success: true,
+      message: "✅ template deleted successfully",
+      data: templateDelete,
+  })
+}catch(error){
+  console.error("Error in /signature/add route:", error);
+  next(error);
+}
+})
+
+//delete profile
+router.post("/profile/delete",async(req,res,next)=>{
+  try{
+    const _id = req.body
+    const profileDeleted = await Template.profileDelete(_id)
+    console.log('profile deleted', profileDeleted)
+    res.status(200).json({
+      success: true,
+        message: "✅ profile deleted successfully",
+        data: profileDeleted,
+    })
+  }catch(error){
+    console.error("Error in /profile/delete route:", error);
+  next(error);
+  }
+})
+
+//signature profile
+router.post("/signature/delete",async(req,res,next)=>{
+  try{
+    const _id = req.body
+    const signatureDeleted = await Template.signatureDelete(_id)
+    console.log('signature deleted', signatureDeleted)
+    res.status(200).json({
+      success: true,
+        message: "✅ signature deleted successfully",
+        data: signatureDeleted,
+    })
+  }catch(error){
+    console.error("Error in /signature/delete route:", error);
+  next(error);
+  }
+})
+
+// Update Route
+router.post("/update", async (req, res) => {
+  try {
+    const { _id, ...dataToUpdate } = req.body; // Extract _id separately
+
+    if (!_id) {
+      return res.status(400).json({ error: "Missing _id field" });
+    }
+
+    const updatedTemplate = await Template.update(_id, dataToUpdate);
+
+    if (!updatedTemplate) {
+      return res.status(404).json({ error: "Template not found" });
+    }
+
+    res.status(200).json({ message: "Template updated successfully", updatedTemplate });
+  } catch (error) {
+    console.error("Error updating template:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 module.exports = router;
 
