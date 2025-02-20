@@ -173,6 +173,7 @@ router.post("/search", async (req, res) => {
             const date = $(element).find('.job-search-card__listdate').text().trim();
             const link = $(element).find('a.base-card__full-link').attr('href');
             const companyImage = $(element).find('.artdeco-entity-image').attr('data-delayed-url'); // Extract company image URL
+            const companyWebsite = `https://www.google.com/search?q=${company}+careers`; // Search Google for the company's career page
 
             if (title && company && location && date && link) {
                 // Fetch job description from the individual job page
@@ -197,7 +198,8 @@ router.post("/search", async (req, res) => {
                     date,
                     link,
                     companyImage: companyImage || null, // Add company image URL (fallback to null if not found)
-                    jobDescription // Add job description
+                    jobDescription, // Add job description
+                    companyWebsite
                 });
             }
         }

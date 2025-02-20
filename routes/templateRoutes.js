@@ -68,6 +68,7 @@ router.post('/fetch', async (req, res) => {
 router.post("/profile/add",upload,async(req,res,next)=>{
   try{
     const {email} = req.body;
+    console.log("email",req.body)
     const {originalname} = req.file; 
     const image = process.env.SPACE_DOMAIN + originalname;
     console.log('image',image)
@@ -183,6 +184,26 @@ router.post("/update", async (req, res) => {
 
 module.exports = router;
 
+//dummy route
+// router.post("/dummy",upload,async(req,res,next)=>{
+//   console.log("-----",req.file)
+//   try {
+//     if (!req.file) {
+//         return res.status(400).json({ message: "No image uploaded" });
+//     }
+
+//     console.log("File received:", req.file);
+    
+//     res.json({
+//         message: "Image received successfully",
+//         filename: req.file.originalname,
+//         mimetype: req.file.mimetype,
+//         size: req.file.size
+//     });
+// } catch (error) {
+//     next(error);
+// }
+// })
 
 
 // router.post("/save", async(req, res)=> {
