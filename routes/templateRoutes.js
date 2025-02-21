@@ -109,7 +109,7 @@ router.post("/signature/add",upload,async(req,res,next)=>{
   }
 })
 
-//delete
+//delete by id
 router.post("/delete",async(req,res,next)=>{
 try{
   const _id = req.body
@@ -126,11 +126,11 @@ try{
 }
 })
 
-//delete profile
+//delete profile by email
 router.post("/profile/delete",async(req,res,next)=>{
   try{
-    const _id = req.body
-    const profileDeleted = await Template.profileDelete(_id)
+    const {email} = req.body
+    const profileDeleted = await Template.profileDelete(email)
     console.log('profile deleted', profileDeleted)
     res.status(200).json({
       success: true,
@@ -143,11 +143,11 @@ router.post("/profile/delete",async(req,res,next)=>{
   }
 })
 
-//signature profile
+//signature delete by email
 router.post("/signature/delete",async(req,res,next)=>{
   try{
-    const _id = req.body
-    const signatureDeleted = await Template.signatureDelete(_id)
+    const {email} = req.body
+    const signatureDeleted = await Template.signatureDelete(email)
     console.log('signature deleted', signatureDeleted)
     res.status(200).json({
       success: true,
@@ -160,7 +160,7 @@ router.post("/signature/delete",async(req,res,next)=>{
   }
 })
 
-// Update Route
+// Update all feilds by id
 router.post("/update", async (req, res) => {
   try {
     const { _id, ...dataToUpdate } = req.body; // Extract _id separately
@@ -183,6 +183,13 @@ router.post("/update", async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
 
 //dummy route
 // router.post("/dummy",upload,async(req,res,next)=>{

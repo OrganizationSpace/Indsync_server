@@ -171,7 +171,7 @@ router.post("/search", async (req, res) => {
             const company = $(element).find('.base-search-card__subtitle').text().trim();
             const location = $(element).find('.job-search-card__location').text().trim();
             const date = $(element).find('.job-search-card__listdate').text().trim();
-            const link = $(element).find('a.base-card__full-link').attr('href');
+            const link = $(element).find('a.base-card__full-link').attr('href');// Extract linkedin company apply link
             const companyImage = $(element).find('.artdeco-entity-image').attr('data-delayed-url'); // Extract company image URL
             const companyWebsite = `https://www.google.com/search?q=${company}+careers`; // Search Google for the company's career page
 

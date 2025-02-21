@@ -106,10 +106,10 @@ class templateController {
 		}
 	}
 
-  async profileDelete( _id ) {
+  async profileDelete( email ) {
 		try {
 			const result = await Template_.updateOne({
-				_id:_id
+				email:email
 			},{ $unset: { profilePicture : 1 } }
     )
 			return result
@@ -119,10 +119,10 @@ class templateController {
 		}
 	}
 
-  async signatureDelete( _id ) {
+  async signatureDelete( email ) {
 		try {
 			const result = await Template_.updateOne({
-				_id:_id
+				email:email
 			},{ $unset: { signature : 1 } }
     )
 			return result
