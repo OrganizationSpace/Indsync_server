@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const Job = require("../schema/job"); // Import Job Schema
 
 const router = express.Router();
@@ -61,5 +62,25 @@ router.post("/job-search", async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
+
+router.get("/jobs", async (req, res) => {
+    try {
+      const linkedInUrl = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=Software%20Engineer&location=India&geoId=102713980&f_TPR=r86400&f_E=mid&f_WT=1&f_JT=full_time&start=10&sortBy=DD";
+      
+      const response = await axios.get(linkedInUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+          "Accept-Language": "en-US,en;q=0.9"
+        }
+      });
+  
+      res.send(response.data);
+    } catch (error) {
+      console.error("Error fetching LinkedIn jobs:", error.message);
+      res.status(500).json({ error: "Failed to fetch job postings" });
+    }
+  });
+
 
 module.exports = router;
