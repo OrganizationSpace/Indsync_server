@@ -11,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 5050;
+const PORT = 5000;
 
 // ✅ Use CORS properly
 app.use(cors());
